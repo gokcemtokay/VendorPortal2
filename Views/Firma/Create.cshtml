@@ -1,0 +1,78 @@
+@model Firma
+
+@{
+    ViewData["Title"] = "Yeni Firma Ekle";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="fas fa-plus"></i> Yeni Firma Ekle</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Ad" class="form-label">Firma Adı *</label>
+                        <input asp-for="Ad" class="form-control" required />
+                        <span asp-validation-for="Ad" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="VergiNo" class="form-label">Vergi No</label>
+                        <input asp-for="VergiNo" class="form-control" />
+                        <span asp-validation-for="VergiNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Telefon" class="form-label">Telefon</label>
+                        <input asp-for="Telefon" class="form-control" />
+                        <span asp-validation-for="Telefon" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Adres" class="form-label">Adres</label>
+                        <textarea asp-for="Adres" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Adres" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="WebSitesi" class="form-label">Web Sitesi</label>
+                        <input asp-for="WebSitesi" type="url" class="form-control" />
+                        <span asp-validation-for="WebSitesi" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FirmaTipi" class="form-label">Firma Tipi *</label>
+                        <select asp-for="FirmaTipi" class="form-select" required>
+                            <option value="">Seçiniz...</option>
+                            <option value="@((int)FirmaTipi.Musteri)">Müşteri</option>
+                            <option value="@((int)FirmaTipi.Tedarikci)">Tedarikçi</option>
+                            <option value="@((int)FirmaTipi.HerIkisi)">Her İkisi</option>
+                        </select>
+                        <span asp-validation-for="FirmaTipi" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Kaydet
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

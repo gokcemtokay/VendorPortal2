@@ -1,0 +1,139 @@
+@model List<Ihale>
+
+@{
+    ViewData["Title"] = "İhale Yönetimi";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">
+            <i class="fas fa-gavel"></i> İhale Yönetimi
+        </h2>
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Musteri"))
+        {
+            <div class="mb-3">
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Yeni İhale Oluştur
+                </a>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="ihaleTable">
+                            <thead>
+                                <tr>
+                                    <th>İhale Adı</th>
+                                    <th>Referans No</th>
+                                    <th>İhale Türü</th>
+                                    <th>Müşteri Firma</th>
+                                    <th>Teklif Başlangıç</th>
+                                    <th>Teklif Bitiş</th>
+                                    <th>Durum</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ihale in Model)
+                                {
+                                    <tr>
+                                        <td><strong>@ihale.IhaleAdi</strong></td>
+                                        <td><code>@ihale.ReferansNo</code></td>
+                                        <td>
+                                            @switch (ihale.IhaleTuru)
+                                            {
+                                                case IhaleTuru.HerkeseAcik:
+                                                    <span class="badge bg-info">Herkese Açık</span>
+                                                    break;
+                                                case IhaleTuru.Davetli:
+                                                    <span class="badge bg-warning text-dark">Davetli</span>
+                                                    break;
+                                                case IhaleTuru.Kapali:
+                                                    <span class="badge bg-secondary">Kapalı</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>@ihale.MusteriFirma?.Ad</td>
+                                        <td>@ihale.TeklifBaslangicTarihi.ToString("dd.MM.yyyy")</td>
+                                        <td>@ihale.TeklifBitisTarihi.ToString("dd.MM.yyyy")</td>
+                                        <td>
+                                            @switch (ihale.Durum)
+                                            {
+                                                case IhaleDurumu.Taslak:
+                                                    <span class="badge status-draft">Taslak</span>
+                                                    break;
+                                                case IhaleDurumu.Yayinda:
+                                                    <span class="badge bg-success">Yayında</span>
+                                                    break;
+                                                case IhaleDurumu.Degerlendiriliyor:
+                                                    <span class="badge bg-warning text-dark">Değerlendiriliyor</span>
+                                                    break;
+                                                case IhaleDurumu.Tamamlandi:
+                                                    <span class="badge bg-info">Tamamlandı</span>
+                                                    break;
+                                                case IhaleDurumu.IptalEdildi:
+                                                    <span class="badge bg-danger">İptal Edildi</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@ihale.Id" class="btn btn-sm btn-info" title="Detaylar">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            @if (ihale.Durum == IhaleDurumu.Taslak && (User.IsInRole("Admin") || User.IsInRole("Musteri")))
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@ihale.Id" class="btn btn-sm btn-warning" title="Düzenle">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form asp-action="Yayinla" asp-route-id="@ihale.Id" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-success" title="Yayınla">
+                                                        <i class="fas fa-rocket"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            @if (User.IsInRole("Tedarikci") && ihale.Durum == IhaleDurumu.Yayinda)
+                                            {
+                                                <a asp-action="TeklifVer" asp-route-id="@ihale.Id" class="btn btn-sm btn-primary" title="Teklif Ver">
+                                                    <i class="fas fa-hand-holding-usd"></i>
+                                                </a>
+                                            }
+                                            <a asp-action="Teklifler" asp-route-id="@ihale.Id" class="btn btn-sm btn-secondary" title="Teklifler">
+                                                <i class="fas fa-list"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Henüz ihale kaydı bulunmamaktadır.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#ihaleTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json'
+                },
+                order: [[4, 'desc']]
+            });
+        });
+    </script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+}

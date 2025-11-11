@@ -1,0 +1,90 @@
+@model List<Malzeme>
+
+@{
+    ViewData["Title"] = "Malzeme Yönetimi";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">
+            <i class="fas fa-box"></i> Malzeme Yönetimi
+        </h2>
+
+        <div class="mb-3">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Yeni Malzeme Ekle
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="malzemeTable">
+                            <thead>
+                                <tr>
+                                    <th>Kod</th>
+                                    <th>Ad</th>
+                                    <th>Firma</th>
+                                    <th>Birim</th>
+                                    <th>Fiyat</th>
+                                    <th>Para Birimi</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var malzeme in Model)
+                                {
+                                    <tr>
+                                        <td><code>@malzeme.Kod</code></td>
+                                        <td><strong>@malzeme.Ad</strong></td>
+                                        <td>@malzeme.Firma?.Ad</td>
+                                        <td>@malzeme.Birim</td>
+                                        <td>@malzeme.Fiyat?.ToString("N2")</td>
+                                        <td>@malzeme.ParaBirimi</td>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@malzeme.Id" class="btn btn-sm btn-info" title="Detaylar">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@malzeme.Id" class="btn btn-sm btn-warning" title="Düzenle">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form asp-action="Delete" asp-route-id="@malzeme.Id" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Henüz malzeme kaydı bulunmamaktadır.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#malzemeTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json'
+                },
+                order: [[0, 'asc']]
+            });
+        });
+    </script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+}
