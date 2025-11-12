@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VendorPortal.Models.Entities
 {
@@ -14,7 +15,17 @@ namespace VendorPortal.Models.Entities
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        // Navigation Properties
+        // ⭐ YENİ: Navigation Properties
         public virtual Firma? Firma { get; set; }
+
+        // ⭐ YENİ: Multi-firma ilişkisi
+        public virtual ICollection<UserFirmaYetkisi> FirmaYetkileri { get; set; } = new List<UserFirmaYetkisi>();
+
+        // ⭐ YENİ: Bildirimler
+        public virtual ICollection<Bildirim> Bildirimler { get; set; } = new List<Bildirim>();
+
+        // ⭐ YENİ: Helper property
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}".Trim();
     }
 }

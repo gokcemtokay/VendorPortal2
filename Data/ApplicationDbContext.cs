@@ -32,7 +32,8 @@ namespace VendorPortal.Data
         public DbSet<IhaleDokuman> IhaleDokumanlari { get; set; } = null!;
         public DbSet<Dokuman> Dokumanlar { get; set; } = null!;
         public DbSet<MailBildirimi> MailBildirimleri { get; set; } = null!;
-
+        public DbSet<UserFirmaYetkisi> UserFirmaYetkileri { get; set; } = null!;
+        public DbSet<Bildirim> Bildirimler { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -146,6 +147,39 @@ namespace VendorPortal.Data
                 .HasForeignKey(i => i.MusteriFirmaId)
                 .IsRequired(true)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // ⭐ YENİ: UserFirmaYetkisi ilişkileri
+            builder.Entity<UserFirmaYetkisi>()
+                .HasOne(ufy => ufy.User)
+                .WithMany(u => u.FirmaYetkileri)
+                .HasForeignKey(ufy => ufy.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserFirmaYetkisi>()
+                .HasOne(ufy => ufy.Firma)
+                .WithMany()
+                .HasForeignKey(ufy => ufy.FirmaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserFirmaYetkisi>()
+                .HasOne(ufy => ufy.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(ufy => ufy.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ⭐ YENİ: Bildirim ilişkileri
+            builder.Entity<Bildirim>()
+                .HasOne(b => b.User)
+                .WithMany(u => u.Bildirimler)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ⭐ YENİ: Index'ler
+            builder.Entity<UserFirmaYetkisi>()
+                .HasIndex(ufy => new { ufy.UserId, ufy.FirmaId });
+
+            builder.Entity<Bildirim>()
+                .HasIndex(b => new { b.UserId, b.Okundu });
 
 
             // Decimal precision ayarları

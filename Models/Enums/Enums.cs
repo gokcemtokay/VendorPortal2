@@ -144,4 +144,111 @@ namespace VendorPortal.Models.Enums
         FirmaBasvuru = 3,
         Teklif = 4
     }
+
+    /// <summary>
+    /// Firma içindeki kullanıcı yetkileri
+    /// </summary>
+    public enum FirmaYetkileri
+    {
+        /// <summary>
+        /// Firma yöneticisi - tüm yetkilere sahip
+        /// </summary>
+        FirmaYoneticisi = 1,
+
+        /// <summary>
+        /// Satın alma yetkisi - sipariş oluşturma, ihale açma
+        /// </summary>
+        SatinAlma = 2,
+
+        /// <summary>
+        /// Teklif verme yetkisi - ihalelere teklif verme
+        /// </summary>
+        Teklif = 3,
+
+        /// <summary>
+        /// Onay yetkisi - siparişleri onaylama
+        /// </summary>
+        Onay = 4,
+
+        /// <summary>
+        /// Sadece görüntüleme yetkisi
+        /// </summary>
+        Goruntuleyici = 5,
+
+        /// <summary>
+        /// Malzeme yönetimi yetkisi
+        /// </summary>
+        MalzemeYonetimi = 6,
+
+        /// <summary>
+        /// Kullanıcı yönetimi yetkisi
+        /// </summary>
+        KullaniciYonetimi = 7
+    }
+
+    /// <summary>
+    /// Bildirim tipleri
+    /// </summary>
+    public enum BildirimTipi
+    {
+        /// <summary>
+        /// Genel bilgi bildirimi
+        /// </summary>
+        Bilgi = 1,
+
+        /// <summary>
+        /// Yeni sipariş bildirimi
+        /// </summary>
+        YeniSiparis = 2,
+
+        /// <summary>
+        /// Sipariş onayı gerekli
+        /// </summary>
+        SiparisOnay = 3,
+
+        /// <summary>
+        /// Sipariş onaylandı
+        /// </summary>
+        SiparisOnaylandi = 4,
+
+        /// <summary>
+        /// Sipariş reddedildi
+        /// </summary>
+        SiparisReddedildi = 5,
+
+        /// <summary>
+        /// Yeni ihale bildirimi
+        /// </summary>
+        YeniIhale = 6,
+
+        /// <summary>
+        /// İhale daveti
+        /// </summary>
+        IhaleDaveti = 7,
+
+        /// <summary>
+        /// Yeni teklif alındı
+        /// </summary>
+        YeniTeklif = 8,
+
+        /// <summary>
+        /// Teklif onaylandı
+        /// </summary>
+        TeklifOnaylandi = 9,
+
+        /// <summary>
+        /// Teklif reddedildi
+        /// </summary>
+        TeklifReddedildi = 10,
+
+        /// <summary>
+        /// Firma başvurusu
+        /// </summary>
+        FirmaBasvuru = 11,
+
+        /// <summary>
+        /// Yaklaşan teslimat
+        /// </summary>
+        YaklasanTeslimat = 12
+    }
 }

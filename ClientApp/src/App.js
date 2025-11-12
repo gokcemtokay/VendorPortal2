@@ -1,6 +1,9 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import { useAuth } from './context/AuthContext';
 
 // Layout
@@ -23,7 +26,19 @@ import IhaleDetails from './pages/Ihale/IhaleDetails';
 import IhaleTeklifler from './pages/Ihale/IhaleTeklifler';
 import SiparisList from './pages/Siparis/SiparisList';
 import SiparisDetails from './pages/Siparis/SiparisDetails';
+import { FirmaProvider } from './context/FirmaContext';
 
+function AppWrapper() {
+    return (
+        <AuthProvider>
+            <FirmaProvider>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </FirmaProvider>
+        </AuthProvider>
+    );
+}
 function App() {
   const { isAuthenticated } = useAuth();
 
@@ -126,7 +141,11 @@ function App() {
               <SiparisDetails />
             </PrivateRoute>
           } />
-        </Route>
+              </Route>
+
+              <Route path="/user-management" element={<PrivateRoute><UserManagement /></PrivateRoute>} />
+              <Route path="/user-management/create" element={<PrivateRoute><UserCreate /></PrivateRoute>} />
+              <Route path="/user-management/edit/:id" element={<PrivateRoute><UserEdit /></PrivateRoute>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

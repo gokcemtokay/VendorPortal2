@@ -70,6 +70,8 @@ builder.Services.AddScoped<ISiparisService, SiparisService>();
 builder.Services.AddScoped<IFirmaService, FirmaService>();
 builder.Services.AddScoped<IMalzemeService, MalzemeService>();
 builder.Services.AddScoped<IIhaleService, IhaleService>();
+builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Background Workers
 builder.Services.AddSingleton<GenericImportWorker>();

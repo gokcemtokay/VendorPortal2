@@ -1,0 +1,87 @@
+﻿.firma-switcher-trigger {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #F3F4F6;
+    border-radius: 8px;
+    color: #374151;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+    .firma-switcher-trigger:hover {
+        background-color: #E5E7EB;
+    }
+
+.single-firma-display {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #EFF6FF;
+    border-radius: 8px;
+    color: #1E40AF;
+    font-weight: 500;
+}
+
+.firma-switcher-dropdown .dropdown-menu {
+    width: 320px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    padding: 0;
+}
+
+.firma-switcher-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+    .firma-switcher-header h6 {
+        margin: 0;
+        font-weight: 600;
+        color: #1F2937;
+    }
+
+.firma-item {
+    padding: 1rem 1.25rem !important;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+    .firma-item:last-child {
+        border-bottom: none;
+    }
+
+    .firma-item.active {
+        background-color: #EFF6FF;
+    }
+
+    .firma-item:hover {
+        background-color: #F9FAFB;
+    }
+
+.firma-item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.firma-name {
+    font-weight: 600;
+    color: #1F2937;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.firma-yetkiler {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+    .firma-yetkiler .badge {
+        font-size: 0.7rem;
+        font-weight: 500;
+        padding: 0.25rem 0.5rem;
+    }

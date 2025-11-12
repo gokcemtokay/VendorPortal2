@@ -111,4 +111,26 @@ export const siparisApi = {
     apiClient.get(`/SiparisApi/GetSiparislerByFirma/${firmaId}?isMusteriView=${isMusteriView}`)
 };
 
+export const userManagementApi = {
+    getAllUsers: () => apiClient.get('/UserManagementApi/GetAllUsers'),
+    getFirmaUsers: (firmaId) => apiClient.get(`/UserManagementApi/GetFirmaUsers/${firmaId}`),
+    getUserById: (userId) => apiClient.get(`/UserManagementApi/GetUser/${userId}`),
+    createUser: (data) => apiClient.post('/UserManagementApi/CreateUser', data),
+    updateUser: (data) => apiClient.put('/UserManagementApi/UpdateUser', data),
+    deleteUser: (userId) => apiClient.delete(`/UserManagementApi/DeleteUser/${userId}`),
+    toggleUserActive: (userId) => apiClient.post(`/UserManagementApi/ToggleActive/${userId}`),
+    getUserFirms: (userId) => apiClient.get(`/UserManagementApi/GetUserFirms/${userId}`),
+    setDefaultFirma: (data) => apiClient.post('/UserManagementApi/SetDefaultFirma', data),
+    getCurrentUserInfo: () => apiClient.get('/UserManagementApi/GetCurrentUserInfo')
+};
+
+export const notificationApi = {
+    getMyNotifications: (sadecOkunmayanlar = false) =>
+        apiClient.get(`/NotificationApi/GetMyNotifications?sadecOkunmayanlar=${sadecOkunmayanlar}`),
+    getUnreadCount: () => apiClient.get('/NotificationApi/GetUnreadCount'),
+    markAsRead: (id) => apiClient.post(`/NotificationApi/MarkAsRead/${id}`),
+    markAllAsRead: () => apiClient.post('/NotificationApi/MarkAllAsRead'),
+    deleteNotification: (id) => apiClient.delete(`/NotificationApi/Delete/${id}`)
+};
+
 export default apiClient;
