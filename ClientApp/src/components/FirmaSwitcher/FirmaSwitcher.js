@@ -1,72 +1,51 @@
 ﻿import React from 'react';
-import { NavDropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import { useFirma } from '../../context/FirmaContext';
-import './FirmaSwitcher.css';
 
 const FirmaSwitcher = () => {
-    const { aktiveFirma, userFirmalar, changeFirma, loading } = useFirma();
+    const { currentFirma, firmalar = [], selectFirma, loading } = useFirma();
 
-    if (loading || userFirmalar.length === 0) return null;
+    // Firmalar yüklenmemişse veya yoksa gösterme
+    if (loading || !firmalar || firmalar.length === 0) {
+        return null;
+    }
 
-    // Tek firma varsa dropdown gösterme
-    if (userFirmalar.length === 1) {
+    // Sadece bir firma varsa gösterme
+    if (firmalar.length === 1) {
         return (
-            <div className="single-firma-display">
-                <i className="fas fa-building me-2"></i>
-                <span>{aktiveFirma?.firmaAd}</span>
+            <div className="text-white me-3">
+                <small>
+                    <i className="fas fa-building me-1"></i>
+                    {currentFirma?.ad || 'Firma Yükleniyor...'}
+                </small>
             </div>
         );
     }
 
+    // Birden fazla firma varsa dropdown göster
     return (
-        <NavDropdown
-            title={
-                <span className="firma-switcher-trigger">
-                    <i className="fas fa-building me-2"></i>
-                    {aktiveFirma?.firmaAd || 'Firma Seçin'}
-                    <i className="fas fa-chevron-down ms-2 small"></i>
-                </span>
-            }
-            id="firma-switcher"
-            align="end"
-            className="firma-switcher-dropdown"
-        >
-            <div className="firma-switcher-header">
-                <h6>Firma Değiştir</h6>
-                <p className="text-muted small mb-0">
-                    {userFirmalar.length} firma yetkisi
-                </p>
-            </div>
+        <Dropdown className="me-3">
+            <Dropdown.Toggle variant="outline-light" size="sm" id="firma-dropdown">
+                <i className="fas fa-building me-1"></i>
+                {currentFirma?.ad || 'Firma Seç'}
+            </Dropdown.Toggle>
 
-            {userFirmalar.map((firma) => (
-                <NavDropdown.Item
-                    key={firma.firmaId}
-                    onClick={() => changeFirma(firma.firmaId)}
-                    className={`firma-item ${aktiveFirma?.firmaId === firma.firmaId ? 'active' : ''}`}
-                >
-                    <div className="firma-item-content">
-                        <div className="firma-name">
-                            {firma.firmaAd}
-                            {aktiveFirma?.firmaId === firma.firmaId && (
-                                <i className="fas fa-check ms-2 text-primary"></i>
-                            )}
-                        </div>
-                        <div className="firma-yetkiler">
-                            {firma.yetkiler.slice(0, 2).map((yetki, idx) => (
-                                <span key={idx} className="badge bg-secondary me-1">
-                                    {yetki}
-                                </span>
-                            ))}
-                            {firma.yetkiler.length > 2 && (
-                                <span className="badge bg-secondary">
-                                    +{firma.yetkiler.length - 2}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                </NavDropdown.Item>
-            ))}
-        </NavDropdown>
+            <Dropdown.Menu>
+                <Dropdown.Header>Firmalar</Dropdown.Header>
+                {firmalar.map((firma) => (
+                    <Dropdown.Item
+                        key={firma.id}
+                        active={currentFirma?.id === firma.id}
+                        onClick={() => selectFirma(firma.id)}
+                    >
+                        {firma.ad}
+                        {currentFirma?.id === firma.id && (
+                            <i className="fas fa-check ms-2 text-success"></i>
+                        )}
+                    </Dropdown.Item>
+                ))}
+            </Dropdown.Menu>
+        </Dropdown>
     );
 };
 

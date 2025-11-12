@@ -19,7 +19,7 @@ Ne eklendiği, ne değiştiği belirt
 "🔄 GÜNCELLENENLER: şunlar"
 "✓ KORUNANLAR: şunlar"
 
-şeklinde net bir özet ver.
+şeklinde net bir özet ver. Kurulum için bat dosyası yazma gerek yok. Kurulum adımlarını özet olarak açıkla yeterli olur.
 
 4. HATALARDA
 Sadece hata ile ilgili düzeltmeleri vermen yeterli olur.
@@ -3070,3 +3070,17 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 4. **Test Et**
 
 Bu dokümantasyon backend'in tamamını içeriyor. Şimdi React frontend'i oluşturalım mı?
+
+# 🎯 KULLANICI YÖNETİMİ VE YETKİLENDİRME SİSTEMİ
+
+## 📋 SİSTEM ÖZELL İKLERİ
+
+### ✅ Özellikler:
+1. **Multi-Firma Desteği**: Bir kullanıcı birden fazla firmada yetkili olabilir
+2. **Rol Bazlı Yetkilendirme**: FirmaYöneticisi, SatınAlma, Teklif, Onay, vb.
+3. **Aktif Firma Değiştirme**: Kullanıcı yetkili olduğu firmalar arasında geçiş yapabilir
+4. **Bildirimler**: Gerçek zamanlı kullanıcı bildirimleri
+5. **Admin**: Tüm firmaları görebilir ve yönetebilir
+6. **Firma Yöneticisi**: Kendi firmasının kullanıcılarını yönetebilir
+
+
