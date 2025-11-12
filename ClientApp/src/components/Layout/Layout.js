@@ -96,7 +96,7 @@ const Layout = () => {
       <footer className="bg-light border-top py-3 mt-auto">
         <Container>
           <div className="text-center text-muted">
-            &copy; {new Date().getFullYear()} Vendor Portal - Tüm hakları saklıdır.
+            &copy; {new Date().getFullYear()} Vendor Portal 2025 - Tüm hakları saklıdır.
           </div>
         </Container>
       </footer>

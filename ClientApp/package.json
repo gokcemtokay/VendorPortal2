@@ -2,6 +2,7 @@
   "name": "vendor-portal-react",
   "version": "1.0.0",
   "private": true,
+  "proxy": "https://localhost:51833",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -41,6 +42,5 @@
   },
   "devDependencies": {
     "react-scripts": "^5.0.1"
-  },
-  "proxy": "https://localhost:5001"
+  }
 }

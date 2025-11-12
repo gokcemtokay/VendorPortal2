@@ -1,4 +1,33 @@
-﻿📋 KONUŞMA ÖZETİ - Vendor Portal Projesi
+﻿
+✅ ÇALIŞMA PRENSİBİMİZ:
+1. HER ZAMAN:
+
+VendorPortal2 Proje knowledge'dan mevcut dosyayı TAMAMEN oku
+Tüm metodları, helper'ları, logic'i tespit et
+Kullanımda olan hiçbir metodu silme veya görmezden gelme
+
+2. DEĞİŞİKLİKLERDE:
+
+Sadece ekleme veya minimal güncelleme yap
+Mevcut mantığı ve metodları koru
+Ne eklendiği, ne değiştiği belirt
+
+3. DOSYA VERİRKEN:
+
+"❌ ÇIKARILANLAR: yok"
+"✅ EKLENENLER: şunlar"
+"🔄 GÜNCELLENENLER: şunlar"
+"✓ KORUNANLAR: şunlar"
+
+şeklinde net bir özet ver.
+
+4. HATALARDA
+Sadece hata ile ilgili düzeltmeleri vermen yeterli olur.
+
+
+
+
+📋 KONUŞMA ÖZETİ - Vendor Portal Projesi
 🎯 Ne Yaptık?
 Sıfırdan tam teşekküllü bir B2B Tedarik Zinciri Yönetim Sistemi geliştirdik!
 

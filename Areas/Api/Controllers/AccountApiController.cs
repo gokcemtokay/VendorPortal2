@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using VendorPortal.Models.DTOs;
 using VendorPortal.Models.Entities;
 
 namespace VendorPortal.Areas.Api.Controllers
@@ -31,46 +32,45 @@ namespace VendorPortal.Areas.Api.Controllers
         }
 
         /// <summary>
-        /// JWT Token ile giriş
-        /// POST: api/AccountApi/Login
+        /// Login endpoint - JWT token döner
         /// </summary>
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             try
             {
-                if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+                if (!ModelState.IsValid)
                 {
-                    return BadRequest(new { message = "Email ve şifre gereklidir." });
+                    return BadRequest(new { message = "Geçersiz giriş bilgileri" });
                 }
 
-                var user = await _userManager.FindByEmailAsync(request.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    return Unauthorized(new { message = "Geçersiz email veya şifre." });
-                }
-
-                var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-                if (!result.Succeeded)
-                {
-                    return Unauthorized(new { message = "Geçersiz email veya şifre." });
+                    _logger.LogWarning($"Login failed: User not found - {model.Email}");
+                    return Unauthorized(new { message = "Email veya şifre hatalı" });
                 }
 
                 if (!user.IsActive)
                 {
-                    return Unauthorized(new { message = "Hesabınız aktif değil." });
+                    _logger.LogWarning($"Login failed: User is inactive - {model.Email}");
+                    return Unauthorized(new { message = "Hesabınız aktif değil" });
+                }
+
+                var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                if (!result.Succeeded)
+                {
+                    _logger.LogWarning($"Login failed: Invalid password - {model.Email}");
+                    return Unauthorized(new { message = "Email veya şifre hatalı" });
                 }
 
                 // JWT Token oluştur
                 var token = await GenerateJwtToken(user);
 
-                // Son giriş tarihini güncelle
-                user.LastLoginDate = DateTime.UtcNow;
-                await _userManager.UpdateAsync(user);
+                _logger.LogInformation($"Login successful: {model.Email}");
 
                 return Ok(new
                 {
-                    message = "Giriş başarılı",
                     token = token,
                     user = new
                     {
@@ -78,17 +78,21 @@ namespace VendorPortal.Areas.Api.Controllers
                         email = user.Email,
                         firstName = user.FirstName,
                         lastName = user.LastName,
-                        firmaId = user.FirmaId
+                        firmaId = user.FirmaId,
+                        roles = await _userManager.GetRolesAsync(user)
                     }
                 });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Login metodunda hata oluştu");
-                return StatusCode(500, new { message = "Sunucu hatası oluştu.", error = ex.Message });
+                _logger.LogError(ex, "Login error occurred");
+                return StatusCode(500, new { message = "Giriş sırasında bir hata oluştu" });
             }
         }
 
+        /// <summary>
+        /// JWT token oluşturur
+        /// </summary>
         private async Task<string> GenerateJwtToken(ApplicationUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
@@ -96,7 +100,7 @@ namespace VendorPortal.Areas.Api.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email ?? ""),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
@@ -107,30 +111,67 @@ namespace VendorPortal.Areas.Api.Controllers
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key configuration is missing")));
+            // FirmaId varsa ekle
+            if (user.FirmaId.HasValue)
+            {
+                claims.Add(new Claim("FirmaId", user.FirmaId.Value.ToString()));
+            }
 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured")));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(
-                    int.Parse(_configuration["Jwt:ExpirationInMinutes"] ?? "60")),
+                expires: DateTime.UtcNow.AddHours(24),
                 signingCredentials: credentials
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }
 
-    /// <summary>
-    /// Login request modeli
-    /// </summary>
-    public class LoginRequest
-    {
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        /// <summary>
+        /// Register endpoint (opsiyonel)
+        /// </summary>
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    IsActive = true,
+                    EmailConfirmed = false
+                };
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    // Varsayılan rol atama (opsiyonel)
+                    // await _userManager.AddToRoleAsync(user, "Musteri");
+
+                    _logger.LogInformation($"User registered: {model.Email}");
+                    return Ok(new { message = "Kayıt başarılı" });
+                }
+
+                return BadRequest(new { message = "Kayıt başarısız", errors = result.Errors });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Register error occurred");
+                return StatusCode(500, new { message = "Kayıt sırasında bir hata oluştu" });
+            }
+        }
     }
 }

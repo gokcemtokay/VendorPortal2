@@ -29,6 +29,9 @@
   <ItemGroup>
     <Content Remove="ClientApp\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ClientApp\package.json" />
+  </ItemGroup>
 
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <Exec WorkingDirectory="ClientApp" Command="npm install" />

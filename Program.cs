@@ -86,12 +86,12 @@ builder.Services.AddControllersWithViews()
 // CORS - React için
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ReactPolicy", builder =>
+    options.AddPolicy("ReactPolicy", policy =>
     {
-        builder.WithOrigins("http://localhost:3000")
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials();
+        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -179,7 +179,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 // SPA Static Files
-app.UseSpaStaticFiles();
+//app.UseSpaStaticFiles();
 
 // CORS
 app.UseCors("ReactPolicy");
@@ -198,15 +198,15 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // SPA Configuration
-app.UseSpa(spa =>
-{
-    spa.Options.SourcePath = "ClientApp";
+//app.UseSpa(spa =>
+//{
+//    spa.Options.SourcePath = "ClientApp";
 
-    if (app.Environment.IsDevelopment())
-    {
-        spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-    }
-});
+//    if (app.Environment.IsDevelopment())
+//    {
+//        spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
+//    }
+//});
 
 app.Run();
 
